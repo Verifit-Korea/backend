@@ -43,6 +43,21 @@ public class Member {
     @NotBlank(message = "프로필 URL은 필수입니다.")
     private String profileUrl;
 
+    @Column
+    @NotBlank(message = "provider는 필수입니다.")
+    private String provider;
+
+    @Column
+    @NotBlank(message = "provider id는 필수입니다.")
+    private String providerId;
+
+    public static Member createOauthMember(String provider, String providerId){
+        return Member.builder()
+                .provider(provider)
+                .providerId(providerId)
+                .build();
+    }
+
     public void changePassword(String newPassword) {
         password = newPassword;
     }
