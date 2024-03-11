@@ -12,6 +12,21 @@ spring:
         #        show_sql: true // 이거보단 logger로 찍자.
         format_sql: true
     database: postgresql
+  servlet:
+    multipart:
+      max-file-size: 10MB
+      max-request-size: 10MB
+
+cloud:
+  aws:
+    s3: verifit
+    credentials:
+      access-key: asdasdasd
+      secret-key: asdasdasd
+    region:
+      static: ap-northeast-2
+    stack:
+      auto: false
 
 logging.level:
   org.hibernate.SQL: debug
@@ -19,3 +34,5 @@ logging.level:
 
 jwt:
   secret: aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
+
+
