@@ -34,8 +34,9 @@ public class Oauth2 {
     }
 
     @Builder
-    public Oauth2(String provider, String providerId) {
+    public Oauth2(String provider, String providerId, Member member) {
         this.provider = provider;
         this.providerId = providerId;
+        this.member = member;
     }
 }
