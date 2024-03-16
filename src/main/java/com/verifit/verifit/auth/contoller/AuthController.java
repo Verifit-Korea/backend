@@ -1,6 +1,7 @@
 package com.verifit.verifit.auth.contoller;
 
 import com.verifit.verifit.auth.domain.response.Oauth2Response;
+import com.verifit.verifit.auth.dto.LoginRequestDTO;
 import com.verifit.verifit.auth.service.AuthService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
@@ -18,5 +19,10 @@ public class AuthController {
             @RequestParam String code
     ){
         return authService.authenticate(provider, code);
+    }
+
+    @PostMapping("/login")
+    public String login(@RequestBody LoginRequestDTO requestDTO) {
+        return authService.loginUsingPassword(requestDTO.getEmail(), requestDTO.getPassword());
     }
 }

@@ -10,6 +10,8 @@ public enum ExceptionCode {
 
     OAUTH2_PROVIDER_NOT_SUPPORTED(HttpStatus.BAD_REQUEST, "oauth2 provider not supported"),
 
+
+    ACCOUNT_NOT_FOUND(HttpStatus.NOT_FOUND, "account not found"),
     ;
 
     private final HttpStatus httpStatus;
