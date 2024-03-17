@@ -21,6 +21,8 @@ import org.hibernate.validator.constraints.URL;
 @Getter
 @Builder
 public class Member {
+    public static final String DEFAULT_PROFILE_URL = "https://";
+
     @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
