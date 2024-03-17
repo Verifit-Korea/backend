@@ -70,7 +70,7 @@ public class AuthService {
     private void createNewMember(String email, String password, String nickname) {
         Member member = Member.builder()
             .email(email)
-            .password(password)
+            .password(passwordEncoder.encode(password))
             .nickname(nickname)
             .profileUrl(Member.DEFAULT_PROFILE_URL)
             .build();
