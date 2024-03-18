@@ -1,9 +1,6 @@
 package com.verifit.verifit.client.oauth2.domain;
 
-<<<<<<< HEAD
-=======
 import com.verifit.verifit.global.exception.ApiException;
->>>>>>> 674d07c8399fbfdc42c878c922a14b42d6482c67
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 

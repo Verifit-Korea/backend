@@ -1,17 +1,6 @@
 package com.verifit.verifit.auth.service;
 
-<<<<<<< HEAD
-import com.verifit.verifit.auth.domain.response.Oauth2Response;
-import com.verifit.verifit.client.oauth2.domain.Oauth2UserInfo;
-import com.verifit.verifit.client.oauth2.service.Oauth2Service;
-import com.verifit.verifit.global.jwt.JwtProvider;
-import com.verifit.verifit.member.dao.MemberRepository;
-import com.verifit.verifit.member.entity.Member;
-import lombok.RequiredArgsConstructor;
-import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
-import org.springframework.util.StringUtils;
-=======
+
 import com.verifit.verifit.auth.domain.entity.Oauth2;
 import com.verifit.verifit.auth.domain.response.Oauth2Response;
 import com.verifit.verifit.auth.repository.Oauth2Repository;
@@ -21,7 +10,6 @@ import com.verifit.verifit.global.jwt.JwtProvider;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
->>>>>>> 674d07c8399fbfdc42c878c922a14b42d6482c67
 
 @Service
 @RequiredArgsConstructor
