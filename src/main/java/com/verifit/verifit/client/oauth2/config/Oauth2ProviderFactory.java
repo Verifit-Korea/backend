@@ -1,5 +1,8 @@
 package com.verifit.verifit.client.oauth2.config;
 
+import com.verifit.verifit.global.exception.ApiException;
+import com.verifit.verifit.global.exception.ExceptionCode;
+
 import java.util.HashMap;
 import java.util.Map;
 
@@ -13,7 +16,7 @@ public class Oauth2ProviderFactory {
 
     public Oauth2Provider getByProviderName(String name) {
         if(!isValidOauth2Provider(name)){
-            throw new RuntimeException();
+            throw new ApiException(ExceptionCode.OAUTH2_PROVIDER_NOT_SUPPORTED);
         }
         return providers.get(name);
     }
