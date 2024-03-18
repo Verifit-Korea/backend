@@ -21,7 +21,9 @@ public class StorageServiceImpl implements StorageService {
         String fileName = UUID.randomUUID().toString() + "_" + file.getOriginalFilename();
 
         try{
-
+            //    @Value("${cloud.aws.s3.bucket}")
+            // 이상하게 application.yml에 있는 값을 가져오지 못함
+            String bucketName = "verifit";
             s3Template.upload(bucketName, fileName, file.getInputStream());
 
             return String.format("https://%s.s3.ap-northeast-2.amazonaws.com/%s", bucketName, fileName);
