@@ -51,6 +51,15 @@ public class Member {
     @NotBlank(message = "provider id는 필수입니다.")
     private String providerId;
 
+    public static Member createMember(String nickname, String email, String password, String profileUrl){
+        return Member.builder()
+                .nickname(nickname)
+                .email(email)
+                .password(password)
+                .profileUrl(profileUrl)
+                .build();
+    }
+
     public static Member createOauthMember(String provider, String providerId){
         return Member.builder()
                 .provider(provider)

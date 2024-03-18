@@ -7,12 +7,13 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+
 @Service
 @RequiredArgsConstructor
 @Transactional(readOnly = true)
 public class MemberService {
     private final MemberRepository memberRepository;
-    private final PasswordEncoder passwordEncoder;
+    private final PasswordEncoder passwordEncoder; // SecurityConfig에서 Bean으로 등록한 PasswordEncoder
 
     public boolean isEmailAlreadyExists(String email) {
         return memberRepository.existsByEmail(email);
