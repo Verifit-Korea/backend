@@ -1,10 +1,13 @@
 package com.verifit.verifit.client.oauth2.domain;
 
+import com.verifit.verifit.global.exception.ApiException;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 
 import java.util.Arrays;
 import java.util.Map;
+
+import static com.verifit.verifit.global.exception.ExceptionCode.OAUTH2_PROVIDER_NOT_SUPPORTED;
 
 
 @RequiredArgsConstructor
@@ -35,7 +38,7 @@ public enum Oauth2UserInfo {
         Oauth2UserInfo oauth2UserInfo = Arrays.stream(Oauth2UserInfo.values())
                 .filter(userInfo -> userInfo.provider.equals(provider))
                 .findAny()
-                .orElseThrow(() -> new IllegalArgumentException("not supported oauth2 provider"));
+                .orElseThrow(() -> new ApiException(OAUTH2_PROVIDER_NOT_SUPPORTED));
         oauth2UserInfo.userAttributes = userAttributes;
         return oauth2UserInfo;
     }
