@@ -41,16 +41,14 @@ public class Member {
     private String password;
 
     @Column
-    @URL(protocol = "http", message = "올바른 주소를 입력해주세요.")
+    @URL(protocol = "https", message = "올바른 주소를 입력해주세요.")
     @NotBlank(message = "프로필 URL은 필수입니다.")
     private String profileUrl;
 
     @Column
-    @NotBlank(message = "provider는 필수입니다.")
     private String provider;
 
     @Column
-    @NotBlank(message = "provider id는 필수입니다.")
     private String providerId;
 
     public static Member createOauthMember(String provider, String providerId){

@@ -57,6 +57,7 @@ public class AuthService {
                 .orElseThrow(() -> new ApiException(ExceptionCode.ACCOUNT_NOT_FOUND));
     }
 
+    @Transactional
     public void registerUsingPassword(String email, String password, String nickname) {
         if (memberService.isEmailAlreadyExists(email)) {
             throw new ApiException(ExceptionCode.EMAIL_IS_ALREADY_IN_USE);
