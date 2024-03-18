@@ -1,10 +1,6 @@
 package com.verifit.verifit.member.entity;
 
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
+import jakarta.persistence.*;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
 import lombok.AccessLevel;
@@ -44,19 +40,6 @@ public class Member {
     @URL(protocol = "https", message = "올바른 주소를 입력해주세요.")
     @NotBlank(message = "프로필 URL은 필수입니다.")
     private String profileUrl;
-
-    @Column
-    private String provider;
-
-    @Column
-    private String providerId;
-
-    public static Member createOauthMember(String provider, String providerId){
-        return Member.builder()
-                .provider(provider)
-                .providerId(providerId)
-                .build();
-    }
 
     public void changePassword(String newPassword) {
         password = newPassword;
