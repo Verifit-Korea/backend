@@ -1,34 +1,72 @@
 package com.verifit.verifit.global.storage;
 
-import io.awspring.cloud.s3.S3Template;
+import com.amazonaws.services.s3.AmazonS3;
+import com.amazonaws.services.s3.model.CannedAccessControlList;
+import com.amazonaws.services.s3.model.PutObjectRequest;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.io.File;
+import java.io.FileOutputStream;
 import java.io.IOException;
-import java.util.UUID;
+import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
+@Slf4j
 public class StorageServiceImpl implements StorageService {
-    private final S3Template s3Template;
-    @Value("${cloud.aws.s3}")
-    private String bucketName;
+    private final AmazonS3 amazonS3Client;
 
-    @Override
-    public String uploadProfileImage(MultipartFile file) {
-        String fileName = UUID.randomUUID().toString() + "_" + file.getOriginalFilename();
+    @Value("${cloud.aws.s3.bucket}")
+    private String bucket;
 
-        try{
-            //    @Value("${cloud.aws.s3.bucket}")
-            // 이상하게 application.yml에 있는 값을 가져오지 못함
-            String bucketName = "verifit";
-            s3Template.upload(bucketName, fileName, file.getInputStream());
+    public String upload(MultipartFile multipartFile, String dirName) throws IOException {
+        File uploadFile = convert(multipartFile)
+                .orElseThrow(() -> new IllegalArgumentException("MultipartFile -> File로 전환이 실패했습니다."));
+        return upload(uploadFile, dirName);
+    }
 
-            return String.format("https://%s.s3.ap-northeast-2.amazonaws.com/%s", bucketName, fileName);
-        } catch (IOException e){
-            throw new RuntimeException("파일 업로드에 실패했습니다: " + e.getMessage());
+    //실제로 파일을 S3에 업로드하는 내부 메ㅔ소드
+    private String upload(File uploadFile, String dirName) {
+        String fileName = dirName + "/" + uploadFile.getName();
+        String uploadImageUrl = putS3(uploadFile, fileName);
+
+        removeNewFile(uploadFile);
+
+        return uploadImageUrl;
+    }
+
+    // 파일을 S3에 업로드하고, 업로드된 파일의 URL을 반환
+    private String putS3(File uploadFile, String fileName) {
+        amazonS3Client.putObject(
+                new PutObjectRequest(bucket, fileName, uploadFile)
+                .withCannedAcl(CannedAccessControlList.PublicRead) // Public Read 권한으로 업로드됨
+        );
+        return amazonS3Client.getUrl(bucket, fileName).toString();
+    }
+
+    // convert() 함수로 인해 로컬에 생성된 파일 삭제 (MultipartFile -> File로 전환 시 로컬에 파일이 생성됨)
+    private void removeNewFile(File targetFile) {
+        if (targetFile.delete()) {
+            log.info("파일이 삭제되었습니다.");
+        } else {
+            log.info("파일이 삭제되지 못했습니다.");
         }
+    }
+
+    // MultipartFile -> File로 전환. Optional로 감싸서 반환.
+    private Optional<File> convert(MultipartFile file) throws IOException {
+        File convertFile = new File(file.getOriginalFilename()); // 업로드한 파일의 이름
+        if (convertFile.createNewFile()) {
+            try (FileOutputStream fos = new FileOutputStream(convertFile)) {
+                fos.write(file.getBytes());
+            }
+            return Optional.of(convertFile);
+        }
+        return Optional.empty();
     }
 }
