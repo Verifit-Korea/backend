@@ -30,7 +30,7 @@ public class StorageServiceImpl implements StorageService {
         return upload(uploadFile, dirName);
     }
 
-    //실제로 파일을 S3에 업로드하는 내부 메ㅔ소드
+    //실제로 파일을 S3에 업로드하는 내부 메소드
     private String upload(File uploadFile, String dirName) {
         String fileName = dirName + "/" + uploadFile.getName();
         String uploadImageUrl = putS3(uploadFile, fileName);
@@ -60,7 +60,9 @@ public class StorageServiceImpl implements StorageService {
 
     // MultipartFile -> File로 전환. Optional로 감싸서 반환.
     private Optional<File> convert(MultipartFile file) throws IOException {
-        File convertFile = new File(file.getOriginalFilename()); // 업로드한 파일의 이름
+        String fileName = System.currentTimeMillis() + "_" + file.getOriginalFilename(); // 파일 이름 충돌 방지
+        File convertFile = new File(System.getProperty("java.io.tmpdir"), fileName); // 임시 디렉토리에 파일 생성
+
         if (convertFile.createNewFile()) {
             try (FileOutputStream fos = new FileOutputStream(convertFile)) {
                 fos.write(file.getBytes());
@@ -69,4 +71,5 @@ public class StorageServiceImpl implements StorageService {
         }
         return Optional.empty();
     }
+
 }
