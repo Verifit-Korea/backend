@@ -3,11 +3,7 @@ package com.verifit.verifit.member.entity;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
-import lombok.AccessLevel;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
+import lombok.*;
 import org.hibernate.validator.constraints.Length;
 import org.hibernate.validator.constraints.URL;
 
@@ -15,6 +11,7 @@ import org.hibernate.validator.constraints.URL;
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @AllArgsConstructor
 @Getter
+@Setter // 테스트할 때 쓰려고 잠깐만 달겠습니당..
 @Builder
 public class Member {
     public static final String DEFAULT_PROFILE_URL = "https://";
@@ -40,6 +37,15 @@ public class Member {
     @URL(protocol = "https", message = "올바른 주소를 입력해주세요.")
     @NotBlank(message = "프로필 URL은 필수입니다.")
     private String profileUrl;
+
+    public static Member createMember(String nickname, String email, String password, String profileUrl){
+        return Member.builder()
+                .nickname(nickname)
+                .email(email)
+                .password(password)
+                .profileUrl(profileUrl)
+                .build();
+    }
 
 
     public void changePassword(String newPassword) {
