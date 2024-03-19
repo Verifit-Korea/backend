@@ -17,6 +17,8 @@ import org.hibernate.validator.constraints.URL;
 @Getter
 @Builder
 public class Member {
+    public static final String DEFAULT_PROFILE_URL = "https://";
+
     @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
@@ -35,7 +37,7 @@ public class Member {
     private String password;
 
     @Column
-    @URL(protocol = "http", message = "올바른 주소를 입력해주세요.")
+    @URL(protocol = "https", message = "올바른 주소를 입력해주세요.")
     @NotBlank(message = "프로필 URL은 필수입니다.")
     private String profileUrl;
 
