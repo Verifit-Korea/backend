@@ -8,12 +8,16 @@ import org.springframework.http.HttpStatus;
 @Getter
 public enum ExceptionCode {
 
+    // auth
     OAUTH2_PROVIDER_NOT_SUPPORTED(HttpStatus.BAD_REQUEST, "oauth2 provider not supported"),
 
-
+    // member
     ACCOUNT_NOT_FOUND(HttpStatus.NOT_FOUND, "account not found"),
     EMAIL_IS_ALREADY_IN_USE(HttpStatus.CONFLICT, "email already in use"),
     NICKNAME_IS_ALREADY_IN_USE(HttpStatus.CONFLICT, "nickname already in use"),
+
+    // point
+    REQUEST_POINT_IS_NEGATIVE(HttpStatus.BAD_REQUEST, "request point is negative"),
     ;
 
     private final HttpStatus httpStatus;
