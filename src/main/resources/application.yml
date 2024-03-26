@@ -1,8 +1,8 @@
 spring:
   datasource:
-    url: jdbc:postgresql://localhost:5432/test_db
-    username: markhan
-    password:
+    url: ${DATABASE_URL}
+    username: ${DATABASE_USERNAME}
+    password: ${DATABASE_PASSWORD}
     driver-class-name: org.postgresql.Driver
   jpa:
     hibernate:
@@ -19,12 +19,14 @@ spring:
 
 cloud:
   aws:
-    s3: verifit
+    s3:
+      bucket: ${AWS_BUCKET_NAME}
     credentials:
-      access-key: asdasdasd
-      secret-key: asdasdasd
+      access-key: ${AWS_ACCESS_KEY}
+      secret-key: ${AWS_SECRET_KEY}
     region:
-      static: ap-northeast-2
+      static: ap-southeast-2
+      auto: false
     stack:
       auto: false
 
@@ -33,4 +35,4 @@ logging.level:
   org.hibernate.type: trace
 
 jwt:
-  secret: aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
+  secret: ${JWT_SECRET_KEY}
