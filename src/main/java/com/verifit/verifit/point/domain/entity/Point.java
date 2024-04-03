@@ -10,7 +10,9 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
+import java.time.DayOfWeek;
 import java.time.LocalDateTime;
+import java.time.temporal.TemporalAdjusters;
 
 @Entity
 @Getter
@@ -27,6 +29,19 @@ public class Point {
     private long availablePoint; // 사용 가능한 포인트
     private LocalDateTime startDateTime; // 시즌 시작일
     private LocalDateTime endDateTime; // 시즌 종료일
+
+    public static Point newSeason(long memberId, LocalDateTime now){
+        LocalDateTime startDateTime = now.with(TemporalAdjusters.previousOrSame(DayOfWeek.MONDAY)).withHour(0).withMinute(0).withSecond(0);
+        LocalDateTime endDateTime = startDateTime.plusDays(6).withHour(23).withMinute(59).withSecond(59);
+
+        return Point.builder()
+                .member(Member.fromId(memberId))
+                .accumulatedPoint(0)
+                .availablePoint(0)
+                .startDateTime(startDateTime)
+                .endDateTime(endDateTime)
+                .build();
+    }
 
     public void use(long point){
         if (point <= 0) {
