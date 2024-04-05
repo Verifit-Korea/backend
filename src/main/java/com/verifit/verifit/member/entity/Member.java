@@ -47,6 +47,12 @@ public class Member {
                 .build();
     }
 
+    public static Member fromId(long id){
+        Member member = new Member();
+        member.id = id;
+        return member;
+    }
+
 
     public void changePassword(String newPassword) {
         password = newPassword;
