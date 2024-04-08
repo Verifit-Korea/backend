@@ -20,7 +20,10 @@ jobs:
           distribution: 'adopt'
 
       - name: Build with Gradle without Test
-        run: ./gradlew build -x test
+        run: ./gradlew clean build -x test
+
+      - name: for debugging -> make a file to check if it is made
+        run: touch /github/workspace/build/libs/debug.txt
 
   deploy:
     needs: build
@@ -42,7 +45,7 @@ jobs:
           host: ${{ secrets.EC2_HOST }}
           username: ${{ secrets.EC2_USERNAME }}
           key: ${{ secrets.EC2_SSH_KEY }}
-          source: "build/libs/verifit-0.0.1-SNAPSHOT.jar"
+          source: "debug.txt"
           target: "~/cicd"
   
       - name: SSH into EC2 and run JAR file
