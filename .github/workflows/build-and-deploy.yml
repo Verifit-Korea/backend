@@ -25,22 +25,19 @@ jobs:
       - name: Build with Gradle without Test
         run: ./gradlew clean build -x test
 
-      - name: Upload Artifact
-        uses: actions/upload-artifact@v2
-        with:
-          name: my-artifact
-          path: build/libs/*.jar
+      - name: Make Directory for delivery
+        run: mkdir deploy
+
+      - name: Copy Jar
+        run: cp ./build/libs/*.jar ./deploy/
 
   deploy:
     needs: build
     runs-on: ubuntu-latest
   
     steps:
-      - name: Download Artifact
-        uses: actions/download-artifact@v2
-        with:
-          name: my-artifact
-          path: ${{ github.workspace }}/artifacts
+      - name: Make zip file
+        run: zip -r -qq -j ./sprintboot-build.zip ./deploy
 
       - name: Deploy to server
         uses: appleboy/scp-action@master
@@ -48,7 +45,7 @@ jobs:
           host: ${{ secrets.EC2_HOST }}
           username: ${{ secrets.EC2_USERNAME }}
           key: ${{ secrets.EC2_SSH_KEY }}
-          source: ${{ github.workspace }}/artifacts/*.jar
+          source: "./springboot-build.zip"
           target: "~/cicd"
           overwrite: true
           
