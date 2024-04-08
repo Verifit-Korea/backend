@@ -45,7 +45,7 @@ jobs:
           host: ${{ secrets.EC2_HOST }}
           username: ${{ secrets.EC2_USERNAME }}
           key: ${{ secrets.EC2_SSH_KEY }}
-          source: "debug.txt"
+          source: "build/libs/debug.txt"
           target: "~/cicd"
   
       - name: SSH into EC2 and run JAR file
