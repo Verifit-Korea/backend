@@ -22,9 +22,6 @@ jobs:
       - name: Build with Gradle without Test
         run: ./gradlew clean build -x test
 
-      - name: for debugging -> make a file to check if it is made
-        run: touch build/libs/debug.txt
-
   deploy:
     needs: build
     runs-on: ubuntu-latest
@@ -45,7 +42,7 @@ jobs:
           host: ${{ secrets.EC2_HOST }}
           username: ${{ secrets.EC2_USERNAME }}
           key: ${{ secrets.EC2_SSH_KEY }}
-          source: "build/libs/debug.txt"
+          source: "./build/libs/*.jar"
           target: "~/cicd"
   
       - name: SSH into EC2 and run JAR file
