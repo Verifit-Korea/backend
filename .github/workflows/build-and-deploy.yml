@@ -25,30 +25,33 @@ jobs:
       - name: Build with Gradle without Test
         run: ./gradlew clean build -x test
 
+      - name: Upload Artifact
+        uses: actions/upload-artifact@v2
+        with:
+          name: my-artifact
+          path: build/libs/*.jar
+
   deploy:
     needs: build
     runs-on: ubuntu-latest
   
     steps:
-      - name: Checkout code
-        uses: actions/checkout@v2
-  
-      - name: Set up JDK
-        uses: actions/setup-java@v2
+      - name: Download Artifact
+        uses: actions/download-artifact@v2
         with:
-          java-version: 17
-          distribution: 'adopt'
-  
+          name: my-artifact
+          path: ${{ github.workspace }}/artifacts
+
       - name: Deploy to server
         uses: appleboy/scp-action@master
         with:
           host: ${{ secrets.EC2_HOST }}
           username: ${{ secrets.EC2_USERNAME }}
           key: ${{ secrets.EC2_SSH_KEY }}
-          source: "build/libs/*.jar"
+          source: ${{ github.workspace }}/artifacts/*.jar
           target: "~/cicd"
           overwrite: true
-  
+          
       - name: SSH into EC2 and run JAR file
         uses: appleboy/ssh-action@master
         with:
