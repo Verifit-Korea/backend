@@ -20,7 +20,7 @@ jobs:
           distribution: 'adopt'
 
       - name: Build with Gradle without Test
-        run: ./gradlew clean build -x test
+        run: ./gradlew build -x test
 
   deploy:
     needs: build
