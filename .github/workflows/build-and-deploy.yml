@@ -23,7 +23,7 @@ jobs:
         run: ./gradlew clean build -x test
 
       - name: for debugging -> make a file to check if it is made
-        run: touch /github/workspace/build/libs/debug.txt
+        run: touch build/libs/debug.txt
 
   deploy:
     needs: build
