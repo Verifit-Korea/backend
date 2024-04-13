@@ -4,9 +4,9 @@ on:
   push:
     branches:
       - master
-      
-permissions:
-  contents: read
+  pull_request:
+    branches:
+      - master
   
 jobs:
   build:
@@ -14,7 +14,7 @@ jobs:
 
     steps:
       - name: Checkout code
-        uses: actions/checkout@v3
+        uses: actions/checkout@v2
 
       - name: Set up JDK
         uses: actions/setup-java@v3
@@ -27,12 +27,6 @@ jobs:
 
       - name: Build with Gradle without Test
         run: ./gradlew clean build -x test
-
-      - name: Upload artifact
-        uses: actions/upload-artifact@v2
-        with:
-          name: cicdsample
-          path: build/libs/*.jar
         
 
   deploy:
@@ -40,25 +34,30 @@ jobs:
     runs-on: ubuntu-latest
   
     steps:
-      - name: Download artifact
-        uses: actions/download-artifact@v2
+      - name: Chechout Repo
+        uses: actions/checkout@v2
+
+      - name: Set up JDK
+        uses: actions/setup-java@v3
         with:
-          name: cicdsample
+          java-version: 17
+          distribution: 'temurin'
+
+      - name: Build with Gradle
+        run: ./gradlew clean build -x test
+
+      - name: Deploy to EC2
+        env:
+          PRIVATE_KEY: ${{ secrets.EC2_SSH_KEY }}
+          HOST: ${{ secrets.EC2_HOST }}
+          USER: ${{ secrets.EC2_USERNAME }}
+        run: |
+          echo "$PRIVATE_KEY" > private_key.pem
+          chmod 600 private_key.pem
+          scp -i private_key.pem -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null build/libs/verifit-0.0.1-SNAPSHOT.jar $USER@$HOST:~/cicd
+          ssh -i private_key.pem -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null $USER@$HOST << EOF
+            sudo systemctl stop springboot-app
+            sudo systemctl start springboot-app
+          EOF
+          rm -f private_key.pem
           
-      - name: Setup SSH
-        uses: webfactory/ssh-agent@v0.5.4
-        with:
-          ssh-private-key: ${{ secrets.EC2_SSH_KEY }}
-          
-      - name: Scp transfer
-        run: scp cicdsample ${{ secrets.EC2_USERNAME }}@${{ secrets.EC2_HOST }}:~/cicd
-          
-      - name: SSH into EC2 and run JAR file
-        uses: appleboy/ssh-action@master
-        with:
-          host: ${{ secrets.EC2_HOST }}
-          username: ${{ secrets.EC2_USERNAME }}
-          key: ${{ secrets.EC2_SSH_KEY }}
-          script: |
-            cd ~/cicd
-            nohup java -jar verifit-0.0.1-SNAPSHOT.jar &
