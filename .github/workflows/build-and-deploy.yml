@@ -43,6 +43,9 @@ jobs:
           java-version: 17
           distribution: 'temurin'
 
+      - name: Build with Gradle
+        run: ./gradlew clean build -x test
+
       - name: Deploy to EC2
         env:
           PRIVATE_KEY: ${{ secrets.EC2_SSH_KEY }}
