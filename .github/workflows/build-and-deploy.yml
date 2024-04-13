@@ -56,8 +56,8 @@ jobs:
           chmod 600 private_key.pem
           scp -i private_key.pem -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null build/libs/verifit-0.0.1-SNAPSHOT.jar $USER@$HOST:~/cicd
           ssh -i private_key.pem -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null $USER@$HOST << EOF
-            systemctl stop springboot-app
-            systemctl start springboot-app
+            sudo systemctl stop springboot-app
+            sudo systemctl start springboot-app
           EOF
           rm -f private_key.pem
           
