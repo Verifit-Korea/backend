@@ -22,6 +22,11 @@ public class MemberService {
         return memberRepository.existsByNickname(nickname);
     }
 
+    public Member findMemberByEmail(String email) {
+        return memberRepository.findByEmail(email)
+                .orElseThrow(() -> new IllegalArgumentException("사용자 정보가 존재하지 않습니다."));
+    }
+
     @Transactional
     public void changePassword(Long memberId, String oldPassword, String newPassword) {
         // 사용자 정보 조회
