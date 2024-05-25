@@ -54,6 +54,12 @@ public class AuthService {
         return jwtProvider.generateAccessToken(member);
     }
 
+    public Member findMemberById(Long memberId) {
+        return memberRepository
+                .findById(memberId)
+                .orElseThrow(() -> new ApiException(ExceptionCode.ACCOUNT_NOT_FOUND));
+    }
+
     private Member findMemberByEmail(String email) {
         return memberRepository
                 .findByEmail(email)

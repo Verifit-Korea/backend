@@ -6,49 +6,57 @@ import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
 import java.util.Collection;
+import java.util.Collections;
 
 @Getter
 public class TokenInfo implements UserDetails {
 
     private Long id;
 
+    private String email;
+    private String password;
+    private Collection<? extends GrantedAuthority> authorities;
+
     @Builder
-    public TokenInfo(Long id) {
+    public TokenInfo(Long id, String email, String password, Collection<? extends GrantedAuthority> authorities) {
         this.id = id;
+        this.email = email;
+        this.password = password;
+        this.authorities = authorities;
     }
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
-        return null;
+        return authorities != null ? authorities : Collections.emptyList();
     }
 
     @Override
     public String getPassword() {
-        return null;
+        return password;
     }
 
     @Override
     public String getUsername() {
-        return null;
+        return email;
     }
 
     @Override
     public boolean isAccountNonExpired() {
-        return false;
+        return true;
     }
 
     @Override
     public boolean isAccountNonLocked() {
-        return false;
+        return true;
     }
 
     @Override
     public boolean isCredentialsNonExpired() {
-        return false;
+        return true;
     }
 
     @Override
     public boolean isEnabled() {
-        return false;
+        return true;
     }
 }

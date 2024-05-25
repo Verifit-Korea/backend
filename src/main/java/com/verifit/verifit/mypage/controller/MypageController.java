@@ -86,10 +86,13 @@ public class MypageController {
     @PutMapping("/update-user-info")
     public ResponseEntity<Map<String, Object>> updateUserInfo(@AuthenticationPrincipal TokenInfo userDetails,
                                                  @RequestBody Map<String, String> updates) {
+        System.out.println("Received request to update user info");
+        System.out.println("User details: " + userDetails);
+        System.out.println("User email: " + userDetails.getUsername());
+
         if (userDetails == null) {
             throw new ApiException(ExceptionCode.ACCOUNT_NOT_FOUND);
         }
-        System.out.println("User Details: " + userDetails);
 
         Member member = memberService.findMemberByEmail(userDetails.getUsername());
 

@@ -1,10 +1,15 @@
 package com.verifit.verifit.global.jwt;
 
+import com.verifit.verifit.auth.service.AuthService;
+import com.verifit.verifit.member.dao.MemberRepository;
 import com.verifit.verifit.member.entity.Member;
+import com.verifit.verifit.member.service.MemberService;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Component;
 
 import java.util.Date;
@@ -17,6 +22,10 @@ public class JwtProvider {
     private String SECRET_KEY;
     public static final long ACCESS_TOKEN_EXPIRATION_TIME = 1000L * 60 * 60 * 3   ; // 3시간
     public static final long REFRESH_TOKEN_EXPIRATION_TIME = 1000L * 60 * 60 * 24 * 7   ; // 7일
+
+    @Autowired
+    @Lazy // 순환참조 방지. 추후 로직 분리로 해결하자.
+    private MemberService memberService;
 
     public String generateAccessToken(Member member) {
         Map<String, Object> claims = new HashMap<>();
@@ -32,8 +41,14 @@ public class JwtProvider {
 
     public TokenInfo extractMember(String accessToken){
         Claims claims = extractClaims(accessToken);
+        Long userId = claims.get("id", Long.class);
+        Member member = memberService.findMemberById(userId);
+
         return TokenInfo.builder()
-                .id(claims.get("id", Long.class))
+                .id(member.getId())
+                .email(member.getEmail())
+                .password(member.getPassword()) // password는 필요한가?
+//                .authorities(member.getAuthorities()) // authorities는 어디에 저장해야 하나?
                 .build();
     }
 
