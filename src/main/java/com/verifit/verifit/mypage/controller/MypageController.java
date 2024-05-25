@@ -1,5 +1,7 @@
 package com.verifit.verifit.mypage.controller;
 
+import com.verifit.verifit.global.exception.ApiException;
+import com.verifit.verifit.global.exception.ExceptionCode;
 import com.verifit.verifit.global.jwt.TokenInfo;
 import com.verifit.verifit.global.storage.StorageService;
 import com.verifit.verifit.member.entity.Member;
@@ -18,6 +20,9 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
+import java.time.LocalDateTime;
+import java.util.HashMap;
+import java.util.Map;
 
 @RestController
 @RequestMapping("/mypage")
@@ -75,5 +80,61 @@ public class MypageController {
         } catch (IOException e) {
             return new ResponseEntity<>("프로필 사진 업로드에 실패했습니다.", HttpStatus.INTERNAL_SERVER_ERROR);
         }
+    }
+
+    // user-info API 구현 - API Specification에 따라 사용자 정보 업데이트
+    @PutMapping("/update-user-info")
+    public ResponseEntity<Map<String, Object>> updateUserInfo(@AuthenticationPrincipal TokenInfo userDetails,
+                                                 @RequestBody Map<String, String> updates) {
+        if (userDetails == null) {
+            throw new ApiException(ExceptionCode.ACCOUNT_NOT_FOUND);
+        }
+        System.out.println("User Details: " + userDetails);
+
+        Member member = memberService.findMemberByEmail(userDetails.getUsername());
+
+        String nickname = updates.get("nickname");
+        String email = updates.get("email");
+        String password = updates.get("password");
+        String profileUrl = updates.get("profileUrl");
+
+        try {
+            if (nickname != null && !nickname.trim().isEmpty()) {
+                if (memberService.isNicknameAlreadyExists(nickname)) {
+                    throw new ApiException(ExceptionCode.NICKNAME_IS_ALREADY_IN_USE);
+                }
+                memberService.updateNickname(member.getId(), nickname);
+            }
+            if (email != null && !email.trim().isEmpty()) {
+                if (memberService.isEmailAlreadyExists(email)) {
+                    throw new ApiException(ExceptionCode.EMAIL_IS_ALREADY_IN_USE);
+                }
+                memberService.updateEmail(member.getId(), email);
+            }
+            if (password != null && !password.trim().isEmpty()) {
+                memberService.changePasswordWithoutOldPassword(member.getId(), password); // 기존 비밀번호 확인 없이 변경
+            }
+            if (profileUrl != null && !profileUrl.trim().isEmpty()) {
+                memberService.updateProfileUrl(member.getId(), profileUrl);
+            }
+
+            Map<String, Object> response = new HashMap<>();
+            response.put("resultCode", HttpStatus.OK.value());
+            response.put("message", "사용자 정보가 업데이트되었습니다.");
+            response.put("timestamp", LocalDateTime.now().toString());
+            response.put("path", "/mypage/update-user-info");
+
+            return new ResponseEntity<>(response, HttpStatus.OK);
+        } catch (ApiException e) {
+            throw e;
+        } catch (Exception e) {
+            throw new ApiException(ExceptionCode.SERVER_ERROR);
+        }
+    }
+
+    // ApiException 테스트용 API
+    @GetMapping("/test")
+    public void test() {
+        throw new ApiException(ExceptionCode.SERVER_ERROR);
     }
 }

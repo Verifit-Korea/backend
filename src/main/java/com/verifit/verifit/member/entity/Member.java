@@ -53,6 +53,7 @@ public class Member {
         return member;
     }
 
+    public void changeEmail(String newEmail) { email = newEmail; }
 
     public void changePassword(String newPassword) {
         password = newPassword;
