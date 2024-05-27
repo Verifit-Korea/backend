@@ -27,6 +27,11 @@ public class MemberService {
                 .orElseThrow(() -> new IllegalArgumentException("사용자 정보가 존재하지 않습니다."));
     }
 
+    public Member findMemberById(Long memberId) {
+        return memberRepository.findById(memberId)
+                .orElseThrow(() -> new IllegalArgumentException("사용자 정보가 존재하지 않습니다."));
+    }
+
 
     @Transactional
     public void updateEmail(Long memberId, String newEmail) {
