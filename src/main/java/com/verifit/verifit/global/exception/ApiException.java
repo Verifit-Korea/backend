@@ -10,6 +10,13 @@ public class ApiException extends RuntimeException {
     private String message;
 
     public ApiException(ExceptionCode e){
+        super(e.getMessage());
+        this.httpStatus = e.getHttpStatus();
+        this.message = e.getMessage();
+    }
+
+    public ApiException(ExceptionCode e, Throwable cause){
+        super(e.getMessage(), cause);
         this.httpStatus = e.getHttpStatus();
         this.message = e.getMessage();
     }

@@ -38,12 +38,20 @@ public class Member {
     @NotBlank(message = "프로필 URL은 필수입니다.")
     private String profileUrl;
 
+    @Column
+    private int availablePoint; // 현재 사용 가능한 포인트. 포인트 너무 커지면 Long으로 바꾸기
+
+    @Column
+    private int accumulatedPoint; // 랭킹용 누적 포인트
+
     public static Member createMember(String nickname, String email, String password, String profileUrl){
         return Member.builder()
                 .nickname(nickname)
                 .email(email)
                 .password(password)
                 .profileUrl(profileUrl)
+                .availablePoint(0)
+                .accumulatedPoint(0)
                 .build();
     }
 
@@ -65,5 +73,17 @@ public class Member {
 
     public void updateProfileUrl(String newProfileUrl) {
         profileUrl = newProfileUrl;
+    }
+
+    public void addAvailablePoint(int point) {
+        availablePoint += point;
+    }
+
+    public void addAccumulatedPoint(int point) {
+        accumulatedPoint += point;
+    }
+
+    public void deductAvailablePoint(int point) {
+        availablePoint -= point;
     }
 }

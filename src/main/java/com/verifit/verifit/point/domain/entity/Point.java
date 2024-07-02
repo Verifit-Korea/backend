@@ -14,6 +14,8 @@ import java.time.DayOfWeek;
 import java.time.LocalDateTime;
 import java.time.temporal.TemporalAdjusters;
 
+
+// 이거는 지금 안 쓰기로 했다. 나중에 확장하면 포인트를 분리한 이 방식을 쓰자.
 @Entity
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)

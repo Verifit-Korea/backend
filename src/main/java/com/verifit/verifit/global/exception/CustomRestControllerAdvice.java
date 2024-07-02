@@ -71,8 +71,21 @@ public class CustomRestControllerAdvice {
 
     @ExceptionHandler(ApiException.class)
     public ResponseEntity<ExceptionResponse> handleApiException(ApiException e, HttpServletRequest request){
+        log.error("ApiException : {}", e.getMessage()); // 디버깅을 위해 ApiException의 메시지를 로그에 출력
         ExceptionResponse response = ExceptionResponse.from(e, request.getRequestURI());
         return ResponseEntity.status(e.getHttpStatus())
+                .body(response);
+    }
+
+    @ExceptionHandler(Exception.class)
+    public ResponseEntity<ExceptionResponse> handleException(Exception e, HttpServletRequest request){
+        log.error("Unhandled Exception: ", e);
+        ExceptionResponse response = ExceptionResponse.of(
+                HttpStatus.INTERNAL_SERVER_ERROR,
+                "An unexpected error occurred",
+                request.getRequestURI()
+        );
+        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
                 .body(response);
     }
 }
