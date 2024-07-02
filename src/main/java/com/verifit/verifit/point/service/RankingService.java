@@ -1,5 +1,6 @@
 package com.verifit.verifit.point.service;
 
+import com.verifit.verifit.member.entity.Member;
 import com.verifit.verifit.point.dto.CombinedRankingDTO;
 import com.verifit.verifit.point.dto.MemberRankingDTO;
 import com.verifit.verifit.point.repository.PointHistoryRepository;
@@ -25,8 +26,7 @@ public class RankingService {
         LocalDateTime startOfDay = LocalDate.now().atStartOfDay();
         LocalDateTime endOfDay = startOfDay.plusDays(1).minusSeconds(1);
 
-        List<MemberRankingDTO> rawRanking = pointHistoryRepository.findRankingByPeriod(startOfDay, endOfDay);
-        return assignRank(rawRanking);
+        return getRankingByPeriod(startOfDay, endOfDay);
     }
 
     // 주간 랭킹 조회
@@ -34,8 +34,7 @@ public class RankingService {
         LocalDateTime startOfWeek = LocalDate.now().with(java.time.DayOfWeek.MONDAY).atStartOfDay();
         LocalDateTime endOfWeek = startOfWeek.plusWeeks(1).minusSeconds(1);
 
-        List<MemberRankingDTO> rawRanking = pointHistoryRepository.findRankingByPeriod(startOfWeek, endOfWeek);
-        return assignRank(rawRanking);
+        return getRankingByPeriod(startOfWeek, endOfWeek);
     }
 
     // 월간 랭킹 조회
@@ -43,30 +42,45 @@ public class RankingService {
         LocalDateTime startOfMonth = LocalDate.now().withDayOfMonth(1).atStartOfDay();
         LocalDateTime endOfMonth = startOfMonth.plusMonths(1).minusSeconds(1);
 
-        List<MemberRankingDTO> rawRanking = pointHistoryRepository.findRankingByPeriod(startOfMonth, endOfMonth);
-        return assignRank(rawRanking);
+        return getRankingByPeriod(startOfMonth, endOfMonth);
     }
 
     // 전체 랭킹 조회
     public CombinedRankingDTO getCombinedRanking() {
-        List<MemberRankingDTO> dailyRanking = getDailyRanking();
-        List<MemberRankingDTO> weeklyRanking = getWeeklyRanking();
-        List<MemberRankingDTO> monthlyRanking = getMonthlyRanking();
+        return new CombinedRankingDTO(getDailyRanking(), getWeeklyRanking(), getMonthlyRanking());
+    }
 
-        return new CombinedRankingDTO(dailyRanking, weeklyRanking, monthlyRanking);
+    private List<MemberRankingDTO> getRankingByPeriod(LocalDateTime start, LocalDateTime end) {
+        List<MemberRankingDTO> rawRanking = pointHistoryRepository.findRankingByPeriod(start, end);
+        return assignRankWithTieHandling(rawRanking);
     }
 
 
-    // 랭킹 부여
-    private List<MemberRankingDTO> assignRank(List<MemberRankingDTO> rawRanking){
-        AtomicInteger rank = new AtomicInteger(1); // AtomicInteger로 랭킹을 순차적으로 부여
-        return rawRanking.stream()
-                .sorted((r1, r2) -> Long.compare(r2.getTotalPoints(), r1.getTotalPoints())) // 포인트 내림차순 정렬
-                .map(ranking -> {
-                    int currentRank = rank.getAndIncrement();
-                    return new MemberRankingDTO(ranking.getMember(), ranking.getTotalPoints(), currentRank);
-                })
-                .collect(Collectors.toList());
+    // 랭킹 부여 (동점자 처리 포함)
+    private List<MemberRankingDTO> assignRankWithTieHandling(List<MemberRankingDTO> rawRanking) {
+        if (rawRanking.isEmpty()) {
+            return rawRanking;
+        }
+
+        rawRanking.sort((r1, r2) -> Long.compare(r2.getTotalPoints(), r1.getTotalPoints())); // 내림차순 정렬
+
+        int currentRank = 1;
+        int countSameRank = 0;
+        long previousPoints = rawRanking.get(0).getTotalPoints();
+
+        for (MemberRankingDTO currentMember : rawRanking) {
+            if (currentMember.getTotalPoints() < previousPoints) {
+                currentRank += countSameRank;
+                countSameRank = 1;
+                previousPoints = currentMember.getTotalPoints();
+            } else {
+                countSameRank++;
+            }
+
+            currentMember.setRank(currentRank);
+        }
+
+        return rawRanking;
     }
 
 }
