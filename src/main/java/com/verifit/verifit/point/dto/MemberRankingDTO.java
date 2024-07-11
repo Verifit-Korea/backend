@@ -7,12 +7,14 @@ import lombok.NoArgsConstructor;
 @Data
 @NoArgsConstructor
 public class MemberRankingDTO {
-    private Member member;
+    private Long memberId;
+    private String nickname;
     private Long totalPoints;
     private int rank;
 
-    public MemberRankingDTO(Member member, Long totalPoints, int rank) {
-        this.member = member;
+    public MemberRankingDTO(Long memberId, String nickname, Long totalPoints, int rank) {
+        this.memberId = memberId;
+        this.nickname = nickname;
         this.totalPoints = totalPoints;
         this.rank = rank;
     }
