@@ -46,19 +46,4 @@ public class RankingController {
             throw new ApiException(ExceptionCode.RANKING_NOT_AVAILABLE);
         }
     }
-
-    @GetMapping("/daily")
-    public List<MemberRankingDTO> getDailyRanking() {
-        return rankingService.getDailyRanking();
-    }
-
-    @GetMapping("/weekly")
-    public List<MemberRankingDTO> getWeeklyRanking() {
-        return rankingService.getWeeklyRanking();
-    }
-
-    @GetMapping("/monthly")
-    public List<MemberRankingDTO> getMonthlyRanking() {
-        return rankingService.getMonthlyRanking();
-    }
 }
