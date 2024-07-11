@@ -2,12 +2,12 @@ package com.verifit.verifit.point.service;
 
 import com.verifit.verifit.global.exception.ApiException;
 import com.verifit.verifit.global.exception.ExceptionCode;
+import com.verifit.verifit.member.dao.MemberRepository;
 import com.verifit.verifit.member.entity.Member;
 import com.verifit.verifit.point.domain.entity.PointHistory;
 import com.verifit.verifit.point.dto.MemberRankingDTO;
+import com.verifit.verifit.point.dto.PointDTO;
 import com.verifit.verifit.point.repository.PointHistoryRepository;
-import com.verifit.verifit.point.repository.PointRepository;
-import com.verifit.verifit.point.domain.entity.Point;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -37,6 +37,7 @@ public class PointService {
 //    }
 
     private final PointHistoryRepository pointHistoryRepository;
+    private final MemberRepository memberRepository;
 
     // 포인트 적립
     @Transactional
@@ -66,5 +67,15 @@ public class PointService {
     // 특정 기간 동안의 멤버 랭킹 조회 -> PointHistoryRepository를 사용하여 지정된 기간 동안의 랭킹 조회
     public List<MemberRankingDTO> getRankingByPeriod(LocalDateTime start, LocalDateTime end){
         return pointHistoryRepository.findRankingByPeriod(start, end);
+    }
+
+    // 사용자의 포인트 조회
+    public PointDTO getMemberPoint(Member member){
+        if(member == null){
+            throw new ApiException(ExceptionCode.ACCOUNT_NOT_FOUND);
+        }
+        int availablePoint = member.getAvailablePoint();
+        int accumulatedPoint = member.getAccumulatedPoint();
+        return new PointDTO(availablePoint, accumulatedPoint);
     }
 }

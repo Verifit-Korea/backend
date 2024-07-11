@@ -51,7 +51,7 @@ public class MemberService {
                 .orElseThrow(() -> new ApiException(ExceptionCode.ACCOUNT_NOT_FOUND));
         // 기존 비밀번호 확인
         if (!passwordEncoder.matches(oldPassword, member.getPassword())) {
-            throw new IllegalArgumentException("기존 비밀번호가 일치하지 않습니다.");
+            throw new ApiException(ExceptionCode.INVALID_PASSWORD);
         }
         // 새 비밀번호 암호화
         String encodedNewPassword = passwordEncoder.encode(newPassword);
@@ -87,5 +87,4 @@ public class MemberService {
         // 프로필 URL 변경
         member.updateProfileUrl(newProfileUrl);
     }
-
 }

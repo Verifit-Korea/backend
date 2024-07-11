@@ -15,6 +15,7 @@ public enum ExceptionCode {
     ACCOUNT_NOT_FOUND(HttpStatus.NOT_FOUND, "account not found"),
     EMAIL_IS_ALREADY_IN_USE(HttpStatus.CONFLICT, "email already in use"),
     NICKNAME_IS_ALREADY_IN_USE(HttpStatus.CONFLICT, "nickname already in use"),
+    INVALID_PASSWORD(HttpStatus.BAD_REQUEST, "invalid password"),
 
     // point
     REQUEST_POINT_IS_NEGATIVE(HttpStatus.BAD_REQUEST, "request point is negative"),
