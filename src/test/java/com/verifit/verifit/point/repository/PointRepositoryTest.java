@@ -1,4 +1,4 @@
-package com.verifit.verifit.point.dao;
+package com.verifit.verifit.point.repository;
 
 import com.verifit.verifit.member.dao.MemberRepository;
 import com.verifit.verifit.member.entity.Member;

@@ -19,6 +19,10 @@ public enum ExceptionCode {
     // point
     REQUEST_POINT_IS_NEGATIVE(HttpStatus.BAD_REQUEST, "request point is negative"),
 
+    // ranking
+    RANKING_NOT_AVAILABLE(HttpStatus.SERVICE_UNAVAILABLE, "ranking is currently not available"),
+    INVALID_RANKING_PERIOD(HttpStatus.BAD_REQUEST, "invalid ranking period"),
+
     // general
     SERVER_ERROR(HttpStatus.INTERNAL_SERVER_ERROR, "server error"),
     ;

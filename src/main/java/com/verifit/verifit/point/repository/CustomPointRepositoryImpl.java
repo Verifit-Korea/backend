@@ -1,4 +1,4 @@
-package com.verifit.verifit.point.dao;
+package com.verifit.verifit.point.repository;
 
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import com.verifit.verifit.point.domain.entity.Point;
