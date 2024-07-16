@@ -1,5 +1,7 @@
 package com.verifit.verifit.member.service;
 
+import com.verifit.verifit.global.exception.ApiException;
+import com.verifit.verifit.global.exception.ExceptionCode;
 import com.verifit.verifit.member.dao.MemberRepository;
 import com.verifit.verifit.member.entity.Member;
 import lombok.RequiredArgsConstructor;
@@ -24,12 +26,12 @@ public class MemberService {
 
     public Member findMemberByEmail(String email) {
         return memberRepository.findByEmail(email)
-                .orElseThrow(() -> new IllegalArgumentException("사용자 정보가 존재하지 않습니다."));
+                .orElseThrow(() -> new ApiException(ExceptionCode.ACCOUNT_NOT_FOUND));
     }
 
     public Member findMemberById(Long memberId) {
         return memberRepository.findById(memberId)
-                .orElseThrow(() -> new IllegalArgumentException("사용자 정보가 존재하지 않습니다."));
+                .orElseThrow(() -> new ApiException(ExceptionCode.ACCOUNT_NOT_FOUND));
     }
 
 
@@ -37,7 +39,7 @@ public class MemberService {
     public void updateEmail(Long memberId, String newEmail) {
         // 사용자 정보 조회
         Member member = memberRepository.findById(memberId)
-                .orElseThrow(() -> new IllegalArgumentException("사용자 정보가 존재하지 않습니다."));
+                .orElseThrow(() -> new ApiException(ExceptionCode.ACCOUNT_NOT_FOUND));
         // 이메일 변경
         member.changeEmail(newEmail);
     }
@@ -46,10 +48,10 @@ public class MemberService {
     public void changePassword(Long memberId, String oldPassword, String newPassword) {
         // 사용자 정보 조회
         Member member = memberRepository.findById(memberId)
-                .orElseThrow(() -> new IllegalArgumentException("사용자 정보가 존재하지 않습니다."));
+                .orElseThrow(() -> new ApiException(ExceptionCode.ACCOUNT_NOT_FOUND));
         // 기존 비밀번호 확인
         if (!passwordEncoder.matches(oldPassword, member.getPassword())) {
-            throw new IllegalArgumentException("기존 비밀번호가 일치하지 않습니다.");
+            throw new ApiException(ExceptionCode.INVALID_PASSWORD);
         }
         // 새 비밀번호 암호화
         String encodedNewPassword = passwordEncoder.encode(newPassword);
@@ -61,7 +63,7 @@ public class MemberService {
     public  void changePasswordWithoutOldPassword(Long memberId, String newPassword) {
         // 사용자 정보 조회
         Member member = memberRepository.findById(memberId)
-                .orElseThrow(() -> new IllegalArgumentException("사용자 정보가 존재하지 않습니다."));
+                .orElseThrow(() -> new ApiException(ExceptionCode.ACCOUNT_NOT_FOUND));
         // 새 비밀번호 암호화
         String encodedNewPassword = passwordEncoder.encode(newPassword);
         // 비밀번호 변경
@@ -72,7 +74,7 @@ public class MemberService {
     public void updateNickname(Long memberId, String nickname) {
         // 사용자 정보 조회
         Member member = memberRepository.findById(memberId)
-                .orElseThrow(() -> new IllegalArgumentException("사용자 정보가 존재하지 않습니다."));
+                .orElseThrow(() -> new ApiException(ExceptionCode.ACCOUNT_NOT_FOUND));
         // 닉네임 변경
         member.changeNickname(nickname);
     }
@@ -81,9 +83,8 @@ public class MemberService {
     public void updateProfileUrl(Long memberId, String newProfileUrl) {
         // 사용자 정보 조회
         Member member = memberRepository.findById(memberId)
-                .orElseThrow(() -> new IllegalArgumentException("사용자 정보가 존재하지 않습니다."));
+                .orElseThrow(() -> new ApiException(ExceptionCode.ACCOUNT_NOT_FOUND));
         // 프로필 URL 변경
         member.updateProfileUrl(newProfileUrl);
     }
-
 }
